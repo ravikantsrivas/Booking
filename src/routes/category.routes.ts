@@ -7,7 +7,7 @@ import { validateRequest } from "../middleware/validate.middleware";
 const router = express.Router();
 
 router.post(
-  "/",
+  "/category",
   isAdmin,
   categoryValidator,
   validateRequest,

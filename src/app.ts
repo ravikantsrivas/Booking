@@ -11,6 +11,6 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoryRoutes);
-app.use("/api/equipment", equipmentRoutes);
+app.use("/api/equipments", equipmentRoutes);
 
 export default app;

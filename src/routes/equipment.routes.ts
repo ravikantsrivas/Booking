@@ -7,7 +7,7 @@ import { validateRequest } from "../middleware/validate.middleware";
 const router = express.Router();
 
 router.post(
-  "/",
+  "/equipment",
   isAdmin,
   equipmentValidator,
   validateRequest,
