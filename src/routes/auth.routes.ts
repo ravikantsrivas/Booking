@@ -3,7 +3,9 @@ import {
   signup,
   login,
   sendOtp,
-  verifyOtp
+  verifyOtp,
+  forgotPassword,
+  resetPassword
 } from "../controllers/auth.controller";
 
 import { validateRequest } from "../middleware/validate.middleware";
@@ -20,5 +22,8 @@ router.post("/signup", signupValidator, validateRequest, signup);
 router.post("/login", loginValidator, validateRequest, login);
 router.post("/send-otp", sendOtpValidator, validateRequest, sendOtp);
 router.post("/verify-otp", verifyOtpValidator, validateRequest, verifyOtp);
+
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 
 export default router;

@@ -115,3 +115,68 @@ export const verifyOtp = async (req: Request, res: Response) => {
 
   res.json({ message: "Login successful", user });
 };
+
+
+//Forgot Password
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const otp = generateOTP();
+
+    await OTP.create({
+      email,
+      otp,
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 mins
+    });
+
+    // send email
+    await sendEmail(email, "Password Reset OTP", `Your OTP is ${otp}`);
+
+    return res.json({ message: "OTP sent to your email" });
+
+  } catch (error) {
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Reset Password
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    const otpRecord = await OTP.findOne({ email, otp });
+
+    if (!otpRecord) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    if (otpRecord.expiresAt < new Date()) {
+      return res.status(400).json({ message: "OTP expired" });
+    }
+
+    // hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    await User.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    // delete OTP after use
+    await OTP.deleteOne({ email });
+
+    return res.json({ message: "Password reset successful" });
+
+  } catch (error) {
+    return res.status(500).json({ message: "Server error" });
+  }
+};
