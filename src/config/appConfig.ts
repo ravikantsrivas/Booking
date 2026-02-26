@@ -21,10 +21,10 @@ requiredEnvVars.forEach((envVar) => {
 });
 
 export const config = {
-  port: process.env.PORT || 5000,
-  mongoUri: process.env.MONGO_URI || "",
-  jwtSecret: process.env.JWT_SECRET || "secret",
-  SALT_ROUNDS: Number(process.env.BCRYPT_SALT_ROUNDS) || 10,
+  port: process.env.PORT,
+  mongoUri: process.env.MONGO_URI,
+  jwtSecret: process.env.JWT_SECRET,
+  SALT_ROUNDS: Number(process.env.BCRYPT_SALT_ROUNDS),
   emailUser: process.env.EMAIL_USER,
   emailPass: process.env.EMAIL_PASS,
   emailHost: process.env.EMAIL_HOST,

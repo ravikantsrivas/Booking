@@ -3,8 +3,8 @@ export enum UserRole {
   Admin = "admin"
 }
 export enum VestSize {
-  SMALL = "S",
-  MEDIUM = "M",
-  LARGE = "L",
+  Small = "S",
+  Medium = "M",
+  Large = "L",
   XL = "XL"
 }
