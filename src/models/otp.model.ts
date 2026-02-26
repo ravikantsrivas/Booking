@@ -1,15 +1,24 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { IOTP } from "../types/otp.types";
 
-export interface IOTP extends Document {
-  email: string;
-  otp: string;
-  expiresAt: Date;
-}
+const otpSchema = new Schema<IOTP>(
+  {
+    email: {
+      type: String,
+      required: true,
+    },
 
-const OTPSchema = new Schema<IOTP>({
-  email: { type: String, required: true },
-  otp: { type: String, required: true },
-  expiresAt: { type: Date, required: true }
-});
+    otp: {
+      type: String,
+      required: true,
+    },
 
-export default mongoose.model<IOTP>("OTP", OTPSchema);
+    expiresAt: {
+      type: Date,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model<IOTP>("OTP", otpSchema);

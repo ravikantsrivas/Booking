@@ -1,28 +1,17 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { IEquipment } from "../types/equipment.types";
+import { VestSize } from "../constants/enums";
 
-export interface IEquipment extends Document {
-  name: string;
-  description: string;
-  category: mongoose.Types.ObjectId;
-  pricePerHour: number;
-  vestSizes: string[];
-  availability: {
-    date: string;
-    startTime: string;
-    endTime: string;
-  }[];
-}
-
-const EquipmentSchema = new Schema<IEquipment>({
+const equipmentSchema = new Schema<IEquipment>({
   name: { type: String, required: true },
   description: { type: String, required: true },
   category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
   pricePerHour: { type: Number, required: true, min: 0 },
-  vestSizes: {
-    type: [String],
-    enum: ["S", "M", "L", "XL"],
-    required: true
-  },
+   vestSizes: {
+      type: [String],
+      enum: Object.values(VestSize),   
+      required: true
+    },
   availability: [
     {
       date: { type: String, required: true },
@@ -30,6 +19,8 @@ const EquipmentSchema = new Schema<IEquipment>({
       endTime: { type: String, required: true }
     }
   ]
-});
+}, 
+{ timestamps: true }
+);
 
-export default mongoose.model<IEquipment>("Equipment", EquipmentSchema);
+export default mongoose.model<IEquipment>("Equipment", equipmentSchema);

@@ -1,24 +1,19 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { IUser } from "../types/user.types";
+import { UserRole } from "../constants/enums";
 
-export interface IUser extends Document {
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
-  role: "user" | "admin";
-  isVerified: boolean;
-}
-
-const UserSchema = new Schema<IUser>(
+const userSchema = new Schema<IUser>(
   {
-    name: { type: String, required: true, minlength: 3 },
-    email: { type: String, required: true, unique: true, lowercase: true },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true, unique: true, lowercase: true },
     phone: { type: String, required: true, minlength: 10, maxlength: 10 },
-    password: { type: String, required: true, minlength: 6 },
-    role: { type: String, enum: ["user", "admin"], default: "user" },
-    isVerified: { type: Boolean, default: false }
+    role: { type: String, enum: Object.values(UserRole), default: UserRole.User },
+    isVerified: { type: Boolean, default: false },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   { timestamps: true }
 );
 
-export default mongoose.model<IUser>("User", UserSchema);
+export default mongoose.model<IUser>("User", userSchema);

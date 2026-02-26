@@ -1,4 +1,5 @@
 import { body } from "express-validator";
+import { UserRole } from "../constants/enums";
 
 export const signupValidator = [
   body("name")
@@ -24,12 +25,15 @@ export const signupValidator = [
     .notEmpty()
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters"),
-
-
-  body("role")
+ 
+     body("role")
     .optional()
-    .isIn(["user", "admin"])
-    .withMessage("Role must be user or admin")
+    .custom((value) => {
+      if (value === UserRole.Admin) {
+        throw new Error("You cannot signup as admin");
+      }
+      return true;
+    }),
 ];
 
 export const loginValidator = [
