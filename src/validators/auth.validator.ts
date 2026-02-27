@@ -37,7 +37,7 @@ export const signupValidator = [
 ];
 
 export const loginValidator = [
-  body("email").isEmail().withMessage("Valid email required"),
+  body("email").isEmail().withMessage("Valid email required").normalizeEmail(),
   body("password").notEmpty().withMessage("Password is required")
 ];
 
@@ -46,7 +46,10 @@ export const sendOtpValidator = [
 ];
 
 export const resetPasswordValidator = [
-  body("email").isEmail().withMessage("Valid email required"),
+  body("email")
+    .isEmail()
+    .withMessage("Valid email required")
+    .normalizeEmail(), // add this
 
   body("otp")
     .isLength({ min: 6, max: 6 })
