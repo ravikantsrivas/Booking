@@ -6,6 +6,7 @@ import { sendEmail } from "../lib/mailtrap";
 import { UserRole } from "../constants/enums";
 import { SALT_ROUNDS } from "../constants/constants";
 import { generateOTP } from "../utils/sendOtp";
+import { OTP_EXPIRY } from "../constants/constants";
 
 // generate OTP
 const otp = generateOTP();
@@ -60,7 +61,7 @@ export const sendOtp = async (email: string) => {
   await OTP.create({
     email,
     otp,
-    expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+    expiresAt: new Date(Date.now() + OTP_EXPIRY),
   });
 
   await sendEmail(email, "Your OTP Code", `Your OTP is ${otp}`);
@@ -91,7 +92,7 @@ export const forgotPassword = async (email: string) => {
   await OTP.create({
     email,
     otp,
-    expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+    expiresAt: new Date(Date.now() + OTP_EXPIRY),
   });
 
   await sendEmail(email, "Reset Password OTP", `Your OTP is ${otp}`);
@@ -107,15 +108,25 @@ export const resetPassword = async (
 ) => {
   const record = await OTP.findOne({ email, otp });
 
-  if (!record) throw new Error("Invalid OTP");
+  if (!record) {
+    throw new Error("Invalid OTP");
+  }
 
   if (record.expiresAt < new Date()) {
     throw new Error("OTP expired");
   }
 
-  const hashed = await bcrypt.hash(newPassword, 10);
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error("User not found");
+  }
 
-  await User.findOneAndUpdate({ email }, { password: hashed });
+  const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+  user.password = hashedPassword;
+  await user.save();
+
+  await OTP.deleteOne({ email });
 
   return { message: "Password reset successful" };
 };
