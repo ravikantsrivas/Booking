@@ -29,4 +29,5 @@ export const config = {
   emailPass: process.env.EMAIL_PASS,
   emailHost: process.env.EMAIL_HOST,
   emailPort: process.env.EMAIL_PORT,
+  jwtResetPasswordSecret: process.env.JWT_RESET_PASSWORD_SECRET,
 };
