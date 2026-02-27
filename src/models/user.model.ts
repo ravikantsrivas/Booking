@@ -9,9 +9,6 @@ const userSchema = new Schema<IUser>(
     password: { type: String, required: true, unique: true, lowercase: true },
     phone: { type: String, required: true, minlength: 10, maxlength: 10 },
     role: { type: String, enum: Object.values(UserRole), default: UserRole.User },
-    isVerified: { type: Boolean, default: false },
-    resetPasswordToken: String,
-    resetPasswordExpires: Date,
   },
   { timestamps: true }
 );

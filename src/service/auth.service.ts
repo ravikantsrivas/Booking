@@ -51,36 +51,7 @@ export const login = async (data: any) => {
   return { message: "Login successful", token };
 };
 
-//  SEND OTP 
-export const sendOtp = async (email: string) => {
-  const user = await User.findOne({ email });
-  if (!user) throw new Error("User not found");
 
-  const otp = generateOTP();
-
-  await OTP.create({
-    email,
-    otp,
-    expiresAt: new Date(Date.now() + OTP_EXPIRY),
-  });
-
-  await sendEmail(email, "Your OTP Code", `Your OTP is ${otp}`);
-
-  return { message: "OTP sent to email" };
-};
-
-//  VERIFY OTP 
-export const verifyOtp = async (email: string, otp: string) => {
-  const record = await OTP.findOne({ email, otp });
-
-  if (!record) throw new Error("Invalid OTP");
-
-  if (record.expiresAt < new Date()) {
-    throw new Error("OTP expired");
-  }
-
-  return { message: "OTP verified successfully" };
-};
 
 //  FORGOT PASSWORD 
 export const forgotPassword = async (email: string) => {
@@ -88,6 +59,8 @@ export const forgotPassword = async (email: string) => {
   if (!user) throw new Error("User not found");
 
   const otp = generateOTP();
+
+  await OTP.deleteMany({ email });
 
   await OTP.create({
     email,
@@ -126,7 +99,7 @@ export const resetPassword = async (
   user.password = hashedPassword;
   await user.save();
 
-  await OTP.deleteOne({ email });
+  await OTP.deleteMany({ email });
 
   return { message: "Password reset successful" };
 };

@@ -19,23 +19,6 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const sendOtp = async (req: Request, res: Response) => {
-  try {
-    const result = await AuthService.sendOtp(req.body.email);
-    res.json(result);
-  } catch (err: any) {
-    res.status(400).json({ message: err.message });
-  }
-};
-
-export const verifyOtp = async (req: Request, res: Response) => {
-  try {
-    const result = await AuthService.verifyOtp(req.body.email, req.body.otp);
-    res.json(result);
-  } catch (err: any) {
-    res.status(400).json({ message: err.message });
-  }
-};
 
 export const forgotPassword = async (req: Request, res: Response) => {
   try {
@@ -48,13 +31,12 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
 export const resetPassword = async (req: Request, res: Response) => {
   try {
-    const result = await AuthService.resetPassword(
-      req.body.email,
-      req.body.otp,
-      req.body.newPassword
-    );
+    const { email, otp, newPassword } = req.body;
+
+    const result = await AuthService.resetPassword(email, otp, newPassword);
+
     res.json(result);
-  } catch (err: any) {
-    res.status(400).json({ message: err.message });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
   }
 };
