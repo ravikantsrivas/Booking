@@ -9,6 +9,7 @@ export const sendEmail = async (to: string, subject: string, text: string) => {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS, 
       },
+      secure: false, // true for 465, false for other ports
     });
 
     const mailOptions = {
